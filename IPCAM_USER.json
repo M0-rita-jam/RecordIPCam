@@ -1,7 +1,16 @@
 {
-    "cam_data":{
-        "user_id":"test_id",
-        "user_pw":"test_pw",
-        "host_ip":"192.168.12.3"
-    }
+    "cams":[
+        {
+            "cam_name":"veranda",
+            "user_id":"morita_cam",
+            "user_pw":"morita_pass",
+            "host_ip":"192.168.1.22"
+        },
+        {
+            "cam_name":"entrance",
+            "user_id":"morita_cam",
+            "user_pw":"morita_pass",
+            "host_ip":"192.168.1.11"
+        }
+    ]
 }
