@@ -1,6 +1,8 @@
 import os
 import sys
 import cv2
+import time
+import threading
 
 # スクリプトのディレクトリパスをsys.pathに追加
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -16,6 +18,9 @@ recode_h = 1
 recode_m = 0
 recode_s = 0
 
+# スレッドが動いているかどうかのフラグ
+g_thread_running = True
+
 """
  録画時間の計算
 """
@@ -28,13 +33,15 @@ def GetRecTime():
 """
  録画機能
 """
-def RecMovie(cap, movie_root_path, time_sec, fps = 15):
+def RecMovie(cap, movie_root_path, cam_name, time_sec, fps = 15):
+    global g_thread_running
+
     ret = True
     date_str = CamTime.GetDate()
     time_str = CamTime.GetTime()
 
     dirpath = movie_root_path + '/' + date_str
-    filepath = dirpath + '/' + date_str + '_' + time_str + '.mp4'
+    filepath = dirpath + '/' + cam_name + '_' + date_str + '_' + time_str + '.mp4'
 
     FileManager.Mkdir(dirpath, filepath)
 
@@ -58,11 +65,17 @@ def RecMovie(cap, movie_root_path, time_sec, fps = 15):
     print("--- Recode Start! ---")
     max_frame = int(fps * time_sec)
     for i in range(max_frame):
+        if g_thread_running == False:
+            # スレッド終了命令を受けていた場合は終了
+            print("--- Thread Stop! ---")
+            ret = False
+            break
+
         try:
             cap_ret, frame = cap.read() # 1フレーム読み込み
             video.write(frame)          # 1フレーム保存する
-        except KeyboardInterrupt:
-            # Press '[ctrl] + [c]'
+        except:
+            # [TODO] 詳しいエラー処理は後で考える
             ret = False
             break
     print("--- Recode Stop! ---")
@@ -77,21 +90,51 @@ def RecMovie(cap, movie_root_path, time_sec, fps = 15):
 """
 def CreateRTSPADDR_FromJson(filepath):
     userdata = JsonManager.OpenJson(filepath)
-    user_id = userdata['cam_data']['user_id']
-    user_pw = userdata['cam_data']['user_pw']
-    host_ip = userdata['cam_data']['host_ip']
-    rtsp_addr   = f"rtsp://{user_id}:{user_pw}@{host_ip}/stream1"
+    rtsp_addr = []
+    for camdata in userdata["cams"]:
+        rtsp_addr.append(JsonManager.ParseRTSP_FromJson(camdata))
 
     return rtsp_addr
+
+"""
+  実際にスレッドで動かす処理
+"""
+def CamThreadFunc(camname ,addr ,rectime):
+    global g_thread_running
+
+    cap = CamCap.OpenCap(addr)
+    rec_runing = True
+    while rec_runing:
+        rec_runing = RecMovie(cap, "movie", camname, rectime)
+    CamCap.CloseCap(cap)
+
+"""
+  スレッドを止める用の処理
+"""
+def CamTreadClose():
+    global g_thread_running
+
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        # Press '[ctrl] + [c]'
+        g_thread_running = False
 
 """
   動画録画(Ctrl+Cで終了)
 """
 if __name__ == '__main__':
     rectime = GetRecTime()
-    addr = CreateRTSPADDR_FromJson()
-    cap = CamCap.OpenCap(addr)
-    rec_runing = True
-    while rec_runing:
-        rec_runing = RecMovie(cap, "movie", rectime)
-    CamCap.CloseCap(cap)
+    addrs = CreateRTSPADDR_FromJson('./IPCAM_USER.json')
+
+    cam_threads = []
+    cam_maxnum = len(addrs)
+
+    # カメラ数分のスレッド起動
+    for i in range(cam_maxnum):
+        cam_threads.append(threading.Thread(target=CamThreadFunc, args=(addrs[i]["cam_name"], addrs[i]["rtsp_addr"], rectime)))
+        cam_threads[i].start()
+
+    # スレッド停止用の処理で待機
+    CamTreadClose()

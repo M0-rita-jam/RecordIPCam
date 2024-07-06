@@ -4,6 +4,7 @@ import cv2
  キャプチャ開始(Close忘れ注意)
 """
 def OpenCap(rtsp_addr):
+    print("Target RTSP ADDR:{0}".format(rtsp_addr))
     # OpenCvでRTSP経由動画
     cap = cv2.VideoCapture(rtsp_addr)
     print("*** Open Capture! ***")
