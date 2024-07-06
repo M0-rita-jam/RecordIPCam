@@ -56,8 +56,8 @@ def RecMovie(cap, movie_root_path, time_sec, fps = 15):
 
     #　動画の保存
     print("--- Recode Start! ---")
-    loop = int(fps * time_sec)
-    for i in range(loop):
+    max_frame = int(fps * time_sec)
+    for i in range(max_frame):
         try:
             cap_ret, frame = cap.read() # 1フレーム読み込み
             video.write(frame)          # 1フレーム保存する
