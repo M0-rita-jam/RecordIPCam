@@ -1,2 +1,2 @@
-# RecodeIPCam
+# RecordeIPCam
 IPカメラの録画用
