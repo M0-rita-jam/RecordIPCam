@@ -83,8 +83,7 @@ def RecMovie(cap, movie_root_path, time_sec, fps = 15):
 if __name__ == '__main__':
     rectime = GetRecTime()
     cap = CamCap.OpenCap()
-    while True:
-        ret = RecMovie(cap, "movie", rectime)
-        if ret == False:
-            break
+    rec_runing = True
+    while rec_runing:
+        rec_runing = RecMovie(cap, "movie", rectime)
     CamCap.CloseCap(cap)
