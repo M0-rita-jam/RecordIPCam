@@ -19,7 +19,7 @@ recode_m = 0
 recode_s = 0
 
 # スレッドが動いているかどうかのフラグ
-ThreadRunning = True
+g_thread_running = True
 
 """
  録画時間の計算
@@ -34,7 +34,7 @@ def GetRecTime():
  録画機能
 """
 def RecMovie(cap, movie_root_path, cam_name, time_sec, fps = 15):
-    global ThreadRunning
+    global g_thread_running
 
     ret = True
     date_str = CamTime.GetDate()
@@ -65,7 +65,7 @@ def RecMovie(cap, movie_root_path, cam_name, time_sec, fps = 15):
     print("--- Recode Start! ---")
     max_frame = int(fps * time_sec)
     for i in range(max_frame):
-        if ThreadRunning == False:
+        if g_thread_running == False:
             # スレッド終了命令を受けていた場合は終了
             print("--- Thread Stop! ---")
             ret = False
@@ -100,7 +100,7 @@ def CreateRTSPADDR_FromJson(filepath):
   実際にスレッドで動かす処理
 """
 def CamThreadFunc(camname ,addr ,rectime):
-    global ThreadRunning
+    global g_thread_running
 
     cap = CamCap.OpenCap(addr)
     rec_runing = True
@@ -112,14 +112,14 @@ def CamThreadFunc(camname ,addr ,rectime):
   スレッドを止める用の処理
 """
 def CamTreadClose():
-    global ThreadRunning
+    global g_thread_running
 
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
         # Press '[ctrl] + [c]'
-        ThreadRunning = False
+        g_thread_running = False
 
 """
   動画録画(Ctrl+Cで終了)
