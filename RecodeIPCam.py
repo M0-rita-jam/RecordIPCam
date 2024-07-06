@@ -9,17 +9,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from module import CamTime
 from module import CamCap
 from module import FileManager
+from module import JsonManager
 
 # １ファイルあたりの録画量
 recode_h = 1
 recode_m = 0
 recode_s = 0
-
-# ユーザー情報(後で書く)
-user_id     = ""
-user_pw     = ""
-host        = ""
-rtsp_addr   = f"rtsp://{user_id}:{user_pw}@{host}/stream1"
 
 """
  録画時間の計算
@@ -78,11 +73,24 @@ def RecMovie(cap, movie_root_path, time_sec, fps = 15):
     return ret
 
 """
+  JsonからRTSPのアドレスを作成
+"""
+def CreateRTSPADDR_FromJson(filepath):
+    userdata = JsonManager.OpenJson(filepath)
+    user_id = userdata['cam_data']['user_id']
+    user_pw = userdata['cam_data']['user_pw']
+    host_ip = userdata['cam_data']['host_ip']
+    rtsp_addr   = f"rtsp://{user_id}:{user_pw}@{host_ip}/stream1"
+
+    return rtsp_addr
+
+"""
   動画録画(Ctrl+Cで終了)
 """
 if __name__ == '__main__':
     rectime = GetRecTime()
-    cap = CamCap.OpenCap(rtsp_addr)
+    addr = CreateRTSPADDR_FromJson()
+    cap = CamCap.OpenCap(addr)
     rec_runing = True
     while rec_runing:
         rec_runing = RecMovie(cap, "movie", rectime)
