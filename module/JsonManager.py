@@ -18,3 +18,14 @@ def ParseRTSP_FromJson(cam_dict):
     rtsp_addr   = f"rtsp://{user_id}:{user_pw}@{host_ip}/stream1"
 
     return {"cam_name":cam_dict["cam_name"], "rtsp_addr":rtsp_addr}
+
+"""
+  JsonからRTSPのアドレスを作成
+"""
+def CreateRTSPADDR_FromJson(filepath):
+    userdata = OpenJson(filepath)
+    rtsp_addr = []
+    for camdata in userdata["cams"]:
+        rtsp_addr.append(ParseRTSP_FromJson(camdata))
+
+    return rtsp_addr
