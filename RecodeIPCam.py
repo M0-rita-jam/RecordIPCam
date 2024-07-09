@@ -14,8 +14,8 @@ from module import FileManager
 from module import JsonManager
 
 # １ファイルあたりの録画量
-recode_h = 1
-recode_m = 0
+recode_h = 0
+recode_m = 15
 recode_s = 0
 
 # スレッドが動いているかどうかのフラグ
