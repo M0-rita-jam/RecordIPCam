@@ -47,7 +47,17 @@ def RecMovie(cap, movie_root_path, cam_name, time_sec, acceptabletime, fps = 15)
     #　動画の保存
     print(f"[{cam_name}]\t--- Record Start! ---")
     max_frame = int(fps * time_sec)
+    time_prev = time.time()
     for i in range(max_frame):
+        time_now = time.time()
+        if time_now > (time_start + time_sec + acceptabletime):
+            print(f"[{cam_name}]\t Recording time exceeded.")
+            break
+
+        if (time_prev - time_now) > 1:
+            print(f"[{cam_name}]\t Camera timeout occurred.")
+            break
+
         if g.thread_running == False:
             # スレッド終了命令を受けていた場合は終了
             print(f"[{cam_name}]\t--- Thread Stop! ---")
@@ -60,6 +70,7 @@ def RecMovie(cap, movie_root_path, cam_name, time_sec, acceptabletime, fps = 15)
         except:
             print(f"[{cam_name}]\t フレーム読み込み失敗")
             break
+        time_prev = time.time()
     print(f"[{cam_name}]\t--- Record Stop! ---")
 
     # 終了
