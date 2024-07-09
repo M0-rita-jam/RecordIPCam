@@ -94,6 +94,9 @@ def CamThreadFunc(camname, addr ,rectime, acceptabletime):
                 rec_runing = False
     CamCap.CloseCap(camname, cap)
 
+"""
+  カメラスレッドの作成
+"""
 def CamThreadCreate(camname ,addr ,rectime, acceptabletime):
     return threading.Thread(target=CamThreadFunc, args=(camname ,addr, rectime, acceptabletime))
 
