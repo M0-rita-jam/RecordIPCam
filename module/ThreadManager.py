@@ -38,8 +38,8 @@ def RecMovie(cap, movie_root_path, cam_name, time_sec, acceptabletime, fps = 15)
     print(f"[{cam_name}]\tAcceptable Time: {acceptabletime}s")
     
     time_start = time.time()
-    print(f"[{cam_name}]\tStart Time: {datetime.datetime.fromtimestamp(time_start)}")
-    print(f"[{cam_name}]\tSchedule Stop Time: {datetime.datetime.fromtimestamp(time_start + time_sec)}")
+    print(f"[{cam_name}]\tStart Time   : {datetime.datetime.fromtimestamp(time_start)}")
+    print(f"[{cam_name}]\tSchedule Time: {datetime.datetime.fromtimestamp(time_start + time_sec)}")
 
     # (保存名前、fourcc,fps,サイズ)
     video = cv2.VideoWriter(filepath, fourcc, fps, (w,h))
