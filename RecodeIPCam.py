@@ -92,6 +92,9 @@ def RecMovie(cap, movie_root_path, cam_name, time_sec, acceptabletime, fps = 15)
         try:
             cap_ret, frame = cap.read() # 1フレーム読み込み
             video.write(frame)          # 1フレーム保存する
+
+            cv2.imshow(cam_name, frame) # 読み込んだフレームの表示
+            cv2.waitKey(1)
         except:
             raise ValueError("なんかエラーでた。")
     print(f"[{cam_name}]\t--- Recode Stop! ---")
@@ -157,6 +160,7 @@ def CamTreadClose():
     except KeyboardInterrupt:
         # Press '[ctrl] + [c]'
         g_thread_running = False
+        cv2.destroyAllWindows()
 
 """
   動画録画(Ctrl+Cで終了)
