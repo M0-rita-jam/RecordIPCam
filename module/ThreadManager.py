@@ -58,8 +58,7 @@ def RecMovie(cap, movie_root_path, cam_name, time_sec, acceptabletime, fps = 15)
             cap_ret, frame = cap.read() # 1フレーム読み込み
             video.write(frame)          # 1フレーム保存する
         except:
-            if cap_ret == False:
-                print(f"[{cam_name}]\t フレーム読み込み失敗")
+            print(f"[{cam_name}]\t フレーム読み込み失敗")
             break
     print(f"[{cam_name}]\t--- Record Stop! ---")
 
@@ -79,8 +78,8 @@ def RecMovie(cap, movie_root_path, cam_name, time_sec, acceptabletime, fps = 15)
 """
   実際にスレッドで動かす処理
 """
-def CamThreadFunc(camname ,addr ,rectime, acceptabletime):
-    cap = CamCap.OpenCap(addr)
+def CamThreadFunc(camname, addr ,rectime, acceptabletime):
+    cap = CamCap.OpenCap(camname, addr)
     rec_runing = True
     while rec_runing:
         try:
@@ -89,11 +88,11 @@ def CamThreadFunc(camname ,addr ,rectime, acceptabletime):
             # 雑すぎるエラー処理(カメラを閉じて開き直す)
             if g.thread_running == True:
                 print(f"{e}")
-                cap = CamCap.ReOpenCap(cap, addr)
+                cap = CamCap.ReOpenCap(camname, cap, addr)
                 rec_runing = True
             else:
                 rec_runing = False
-    CamCap.CloseCap(cap)
+    CamCap.CloseCap(camname, cap)
 
 def CamThreadCreate(camname ,addr ,rectime, acceptabletime):
     return threading.Thread(target=CamThreadFunc, args=(camname ,addr, rectime, acceptabletime))
