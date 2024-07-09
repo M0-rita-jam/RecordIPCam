@@ -54,20 +54,20 @@ def RecMovie(cap, movie_root_path, cam_name, time_sec, fps = 15):
     h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     #　情報の表示
-    print(f"FilePath:{filepath}")
-    print(f"Width:{w}, Height:{h}, FPS:{fps}")
-    print(f"Recode Time: {time_sec}s")
+    print(f"[{cam_name}]\tFilePath:{filepath}")
+    print(f"[{cam_name}]\tWidth:{w}, Height:{h}, FPS:{fps}")
+    print(f"[{cam_name}]\tRecode Time: {time_sec}s")
 
     # (保存名前、fourcc,fps,サイズ)
     video = cv2.VideoWriter(filepath, fourcc, fps, (w,h))
 
     #　動画の保存
-    print("--- Recode Start! ---")
+    print(f"[{cam_name}]\t--- Recode Start! ---")
     max_frame = int(fps * time_sec)
     for i in range(max_frame):
         if g_thread_running == False:
             # スレッド終了命令を受けていた場合は終了
-            print("--- Thread Stop! ---")
+            print(f"[{cam_name}]\t--- Thread Stop! ---")
             ret = False
             break
 
@@ -78,7 +78,7 @@ def RecMovie(cap, movie_root_path, cam_name, time_sec, fps = 15):
             # [TODO] 詳しいエラー処理は後で考える
             ret = False
             break
-    print("--- Recode Stop! ---")
+    print(f"[{cam_name}]\t--- Recode Stop! ---")
 
     # 終了
     video.release()
