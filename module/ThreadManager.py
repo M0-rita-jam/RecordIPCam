@@ -32,9 +32,9 @@ def RecMovie(cap, movie_root_path, cam_name, time_sec, acceptabletime, fps = 15)
     h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     #　情報の表示
-    print(f"[{cam_name}]\tFilePath:{filepath}")
-    print(f"[{cam_name}]\tWidth:{w}, Height:{h}, FPS:{fps}")
-    print(f"[{cam_name}]\tRecord Time: {time_sec}s")
+    print(f"[{cam_name}]\tFilePath: {filepath}")
+    print(f"[{cam_name}]\tWidth: {w}, Height: {h}, FPS: {fps}")
+    print(f"[{cam_name}]\tRecord Time    : {time_sec}s")
     print(f"[{cam_name}]\tAcceptable Time: {acceptabletime}s")
     
     time_start = time.time()
@@ -68,7 +68,7 @@ def RecMovie(cap, movie_root_path, cam_name, time_sec, acceptabletime, fps = 15)
             cap_ret, frame = cap.read() # 1フレーム読み込み
             video.write(frame)          # 1フレーム保存する
         except:
-            print(f"[{cam_name}]\t フレーム読み込み失敗")
+            print(f"[{cam_name}]\t Frame loading failure.")
             break
         time_prev = time.time()
     print(f"[{cam_name}]\t--- Record Stop! ---")
